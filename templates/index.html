@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mood Based AI Chatbot</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <label>Choose Personality</label>
+
+        <select id="personality">
+            <option>Simple Bot</option>
+            <option>Funny Bot</option>
+            <option>Angry Bot</option>
+            <option>Teacher Bot</option>
+            <option>Motivational Bot</option>
+        </select>
+
+    </div>
+
+
+    <!-- Main Chat Area -->
+    <div class="main">
+
+        <div class="header">
+            <h1>🤖 Mood Based AI Chatbot</h1>
+            <p>Choose your chatbot personality and start chatting!</p>
+        </div>
+
+
+        <div id="chatbox" class="chatbox">
+        </div>
+
+
+        <!-- Input -->
+        <div class="input-area">
+
+            <input
+                type="text"
+                id="message"
+                placeholder="Type your message..."
+                onkeydown="handleEnter(event)"
+            >
+
+            <button onclick="sendMessage()">↑</button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+async function sendMessage() {
+
+    const input = document.getElementById("message");
+    const message = input.value.trim();
+
+    if (!message) {
+        return;
+    }
+
+    const personality =
+        document.getElementById("personality").value;
+
+    const chatbox =
+        document.getElementById("chatbox");
+
+
+    chatbox.innerHTML += `
+        <div class="message user">
+            <div class="icon">👤</div>
+            <div class="text">${message}</div>
+        </div>
+    `;
+
+    input.value = "";
+
+
+    const response = await fetch("/chat", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            message: message,
+            personality: personality
+        })
+
+    });
+
+
+    const data = await response.json();
+
+
+    chatbox.innerHTML += `
+        <div class="message bot">
+            <div class="icon">🤖</div>
+            <div class="text">${data.response}</div>
+        </div>
+    `;
+
+    chatbox.scrollTop = chatbox.scrollHeight;
+}
+
+
+function handleEnter(event) {
+
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+
+}
+
+</script>
+
+</body>
+</html>
