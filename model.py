@@ -1,13 +1,12 @@
 from dotenv import load_dotenv
-from langchain.chat_models import init_chat_model
+from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
 load_dotenv()
 import os
 
-model = init_chat_model(
-    os.getenv("GROQ_MODEL"),
-    model_provider="groq"
+model = ChatGroq(
+    model="openai/gpt-oss-120b"
 )
 
 
